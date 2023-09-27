@@ -1,16 +1,10 @@
 body {
     margin: 0;
     padding: 0;
-    background: url(../images/homer_arbuste.png);
-    background-color: #4CAF50;
-    background-size: 20%;
-    background-position: right;
-    background-repeat: no-repeat;
+    background-image: url('https://media.tenor.com/Ub8c38rUJJ0AAAAC/springfield.gif'); 
+    background-size: cover;
+    background-position: center;
     font-family: 'Nunito Sans', sans-serif;
-}
-
-body {
-    background-position: right bottom;
 }
 
 .container {
@@ -20,7 +14,7 @@ body {
     min-height: 100vh;
 }
 
-.register-box {
+.error-box {
     width: 90%;
     max-width: 400px;
     padding: 40px;
@@ -30,57 +24,27 @@ body {
     color: white;
 }
 
-.logo img {
-    width: 170px;
-    margin-bottom: 10px;
-}
-
-.register-box h2 {
+.error-box h2 {
     margin-bottom: 20px;
 }
 
-input[type="email"], input[type="text"], input[type="password"], select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    background:#212121;
-    color: white;
-    border-radius: 5px;
-}
-
-
 button {
     font-size: 100%;
-    width: 100%;
-    padding: 10px;
-    background: #3F51B5;
+    padding: 10px 20px; /* Añadir padding horizontal */
+    background: #D32F2F;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-family: 'Nunito Sans', sans-serif;
+    display: inline-block; /* Hacer que el botón se ajuste al contenido */
 }
 
 button:hover {
-    background: #303F9F;
+    background: #F44336;
 }
 
-.options {
-    margin-top: 20px;
-    font-size: 13px;
-}
 
-.options a {
-
-    color: #FBC02D;
-    text-decoration: none;
-}
-
-.options span {
-    display: block;
-    margin-top: 10px;
-}
+/* ... (tu otro CSS) ... */
 
 @keyframes bounceIn {
     0%, 20%, 50%, 80%, 100% {

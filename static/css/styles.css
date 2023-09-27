@@ -76,3 +76,29 @@ button:hover {
 }
 
 
+@keyframes bounceIn {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    
+    40% {
+        transform: translateY(-30px);
+    }
+    
+    60% {
+        transform: translateY(-15px);
+    }
+}
+
+.container {
+ 
+    opacity: 0; 
+    transform: translateY(-50px);
+    transition: opacity 0.5s ease, transform 0.5s ease; 
+}
+
+.container.visible {
+    opacity: 1;
+    transform: translateY(0);
+    animation: bounceIn 1s; /* Aplicar la animación de rebote cuando sea visible */
+}
