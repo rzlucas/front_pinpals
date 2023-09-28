@@ -22,13 +22,16 @@ document.getElementById('register-form').addEventListener('submit', function(eve
       .then(data => {
         if (data.message === "User registered successfully") {
           alert("Usuario creado con éxito");
-          window.location.href = "/login";
+          window.location.href = "../templates/login.html";
         } else {
           alert(data.message);
         }
       })
       .catch(error => {
         console.error('Error:', error);
+        window.location.href = "../templates/error.html";
+
+        
       });
   });
   

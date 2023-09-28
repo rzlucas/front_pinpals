@@ -34,7 +34,7 @@ body {
     margin-bottom: 20px;
 }
 
-input[type="usuario"], input[type="password"] {
+input[type="text"], input[type="password"] {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -100,5 +100,5 @@ button:hover {
 .container.visible {
     opacity: 1;
     transform: translateY(0);
-    animation: bounceIn 1s; /* Aplicar la animación de rebote cuando sea visible */
+    animation: bounceIn 1s; /* Aplica la animación de rebote cuando es visible */
 }

@@ -1,0 +1,15 @@
+.profile-content div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.profile-content p {
+    margin: 0;
+}
+
+button.edit-btn {
+    padding: 5px 10px; /* Reducir el padding para que el botón sea más pequeño */
+    font-size: 0.9em; /* Reducir el tamaño de la fuente */
+}
