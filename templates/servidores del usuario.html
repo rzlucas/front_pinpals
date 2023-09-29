@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap" rel="stylesheet">
+    <title>Info de usuario</title>
+    <style>
+        body, h2, p {
+            margin: 0;
+            padding: 0;
+            
+        }
+
+        body {
+            font-family: 'Nunito Sans', sans-serif;
+            background: url(../images/moleman.png);
+            background-color: #36393f;
+            color: #BDBDBD;
+            background-position: right bottom;
+            background-size: 20%;
+            background-position: right;
+            background-repeat: no-repeat;
+
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: #8e9297;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            background-color: #3F51B5;
+            color: white;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #303F9F;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 5px;
+            border: none;
+            border-radius: 3px;
+            background-color: #40444b;
+            color: white;
+            margin-right: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .vertical-section {
+            flex: 1;
+            min-width: 300px;
+            margin-right: 20px;
+            padding: 20px;
+            background-color: #2f3136;
+            border-radius: 5px;
+        }
+
+        .server, .channel, .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .server {
+            background-color: #202225;
+        }
+
+        .channel {
+            background-color: #40444b;
+        }
+
+        .message {
+            background-color: #40444b;
+        }
+
+        @media (max-width: 600px) {
+            .vertical-section {
+                flex-basis: 100%;
+                margin-bottom: 20px;
+            }
+        }
+
+        form {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loadingDiv" style="position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.9); display:none; z-index:9999;">
+        <img src="../static/images/loading.gif" alt="" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width: 100px; height: auto;">
+    </div>
+    <script src="../static/js/loading.js"></script>
+    <div class="container">
+        <div class="vertical-section">
+            <h2>Información de usuario </h2>
+            <label for="userId">ID del Usuario:</label>
+            <input type="number" id="userId" name="userId">
+            <button onclick="getUserInfo()">Obtener info del usuario</button>
+            <div id="userInfo">
+                <p>Username: </p>
+                <p>Email: </p>
+            </div>
+        </div>
+
+        <div class="vertical-section">
+            <h2>Servidores</h2>
+            <div id="serverInfo">
+                <p>No hay servidores para este usuario.</p>
+            </div>
+            <form id="add-server-form">
+                <input type="text" id="serverName" placeholder="Nombre del Servidor" required>
+                <button type="submit">Añadir Servidor</button>
+            </form>
+        </div>
+
+        <div class="vertical-section">
+            <h2>Chanales</h2>
+            <div id="channelsInfo">
+                <p>Seleccione un servidor para ver los canales.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseURL = 'http://127.0.0.1:5000';
+
+        async function getUserInfo() {
+            try {
+                const userId = document.getElementById('userId').value;
+                const response = await fetch(`${baseURL}/users/${userId}`);
+                if (!response.ok) throw new Error('Error fetching user info');
+                const data = await response.json();
+
+                document.getElementById('userInfo').innerHTML = `
+                    <p>Username: ${data.Username}</p>
+                    <p>Email: ${data.Email}</p>
+                `;
+
+                getServers(userId);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function getServers(userId) {
+            try {
+                const response = await fetch(`${baseURL}/servers`);
+                if (!response.ok) throw new Error('Error fetching servers');
+                const servers = await response.json();
+
+                let serverInfoHTML = '';
+
+                servers.forEach(server => {
+                    if (server.OwnerID == userId) {
+                        serverInfoHTML += `
+                            <div class="server">
+                                <p>Nombre del Servidor: ${server.Name}</p>
+                                <button onclick="addChannelForm(${server.ID})">Añadir Canal</button>
+                                <div id="channelsForServer${server.ID}"></div>
+                                <button onclick="getChannels(${server.ID})">Ver Canales</button>
+                            </div>
+                        `;
+                    }
+                });
+
+                document.getElementById('serverInfo').innerHTML = serverInfoHTML;
+                document.getElementById('channelsInfo').innerHTML = '';
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function addChannelForm(serverId) {
+            const form = `
+                <form onsubmit="addChannel(event, ${serverId})">
+                    <input type="text" id="channelName${serverId}" placeholder="Nombre del Canal" required>
+                    <button type="submit">Añadir Canal</button>
+                </form>
+            `;
+            document.getElementById(`channelsForServer${serverId}`).innerHTML += form;
+        }
+
+        function addChannel(event, serverId) {
+            event.preventDefault();
+            const name = document.getElementById(`channelName${serverId}`).value;
+
+            fetch(`${baseURL}/channels/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    Name: name,
+                    ServerID: serverId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Canal agregado con éxito");
+                document.getElementById(`channelName${serverId}`).value = '';
+                getServers(document.getElementById('userId').value);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        async function getChannels(serverId) {
+            try {
+                const response = await fetch(`${baseURL}/channels/by_server/${serverId}`);
+                if (!response.ok) throw new Error('Error fetching channels');
+                const channels = await response.json();
+
+                if (channels.message) {
+                    document.getElementById(`channelsForServer${serverId}`).innerHTML = '<p>No channels found for this server.</p>';
+                    return;
+                }
+
+                let channelInfoHTML = '';
+
+                channels.forEach(channel => {
+                    channelInfoHTML += `
+                        <div class="channel">
+                            <p>Nombre del Canal: ${channel.Name}</p>
+                            <button onclick="getMessages(${channel.ID})">Ver Mensajes</button>
+                            <div id="messagesForChannel${channel.ID}"></div>
+                            <input type="text" id="newMessageContent${channel.ID}" placeholder="Type a message" />
+                            <button onclick="addMessage(${channel.ID})">Enviar Mensaje</button>
+                        </div>
+                    `;
+                });
+
+                document.getElementById(`channelsForServer${serverId}`).innerHTML = channelInfoHTML;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function getMessages(channelId) {
+            try {
+                const response = await fetch(`${baseURL}/messages`);
+                if (!response.ok) throw new Error('Error fetching messages');
+                const messages = await response.json();
+
+                let messageInfoHTML = '';
+
+                messages.forEach(message => {
+                    if (message.ChannelID == channelId) {
+                        messageInfoHTML += `<div class="message">Content: ${message.Content}</div>`;
+                    }
+                });
+
+                document.getElementById(`messagesForChannel${channelId}`).innerHTML = messageInfoHTML;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function addMessage(channelId) {
+            try {
+                const content = document.getElementById(`newMessageContent${channelId}`).value;
+                const userId = 1;
+
+                const response = await fetch(`${baseURL}/messages/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        Content: content,
+                        UserID: userId,
+                        ChannelID: channelId
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    alert('Mensaje enviado');
+                    getMessages(channelId);
+                } else {
+                    console.error('Error al enviar el mensaje:', response.statusText);
+                    alert('Error al enviar el mensaje');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+
+</html>
