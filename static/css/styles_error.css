@@ -43,9 +43,6 @@ button:hover {
     background: #F44336;
 }
 
-
-/* ... (tu otro CSS) ... */
-
 @keyframes bounceIn {
     0%, 20%, 50%, 80%, 100% {
         transform: translateY(0);
@@ -61,7 +58,6 @@ button:hover {
 }
 
 .container {
-    /* ... (tus otros estilos) ... */
     opacity: 0; /* Hacerlo invisible inicialmente */
     transform: translateY(-50px); /* Moverlo un poco hacia arriba inicialmente */
     transition: opacity 0.5s ease, transform 0.5s ease; /* Agregar una transición suave */
