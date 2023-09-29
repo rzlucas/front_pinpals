@@ -19,6 +19,7 @@
 </div>
 <script src="../static/js/loading.js"></script>
 <script src="../static/js/animation.js"></script>
+<script src="../static/js/profile.js"></script>  
 
       
     <div class="container">
@@ -30,14 +31,30 @@
             </form>       
         </div>
 
-        <div id="profilePictureContainer" style="display:none;">
-            <label>Profile Picture: </label>
-            <img id="profilePicture" src="" alt="Profile Picture">
-            <button onclick="editField('ProfilePicture')">Cambiar imagen</button>
-        </div>
+        <div id="user-profile" style="display:none;">
+            <div>
+                <label>Username: </label>
+                <span id="username"></span>
+                <button onclick="editField('Username')">Edit</button>
+            </div>
+            <div>
+                <label>Email: </label>
+                <span id="email"></span>
+                <button onclick="editField('Email')">Edit</button>
+            </div>
+            <div>
+                <label>Password: </label>
+                <button onclick="editField('Password')">Change Password</button>
+            </div>
+            <div>
+                <label>Profile Picture: </label>
+                <img id="profilePicture" src="" alt="Profile Picture">
+                <button onclick="editField('ProfilePicture')">Change Picture</button>
+            </div>
+    
      
     </div>
 
-    <script src="../static/js/profile.js"></script>   
+ 
 </body>
 </html>
