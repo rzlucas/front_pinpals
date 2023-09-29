@@ -22,7 +22,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event){
             if (data.message === "Logged in successfully") {
                 window.location.href = "http://127.0.0.1:5000/userdata";
             } else {
-                window.location.href = "../templates/error.html";
+                window.location.href = "../templates/perfil.html";
             }
         }
     })
