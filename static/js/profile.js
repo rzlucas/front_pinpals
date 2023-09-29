@@ -1,3 +1,8 @@
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Esto prevendrá la recarga de la página
+    fetchUserProfile();
+});
+
 async function fetchUserProfile() {
     const userId = document.getElementById('userId').value;
     if (!userId) {
@@ -13,11 +18,11 @@ async function fetchUserProfile() {
         }
 
         const data = await response.json();
-        document.getElementById('username').textContent = data.username; // Asegúrate de que estas claves coinciden con las de tu objeto JSON
-        document.getElementById('email').textContent = data.email; // Asegúrate de que estas claves coinciden con las de tu objeto JSON
-        document.getElementById('profilePicture').src = data.profilePicture; // Asegúrate de que estas claves coinciden con las de tu objeto JSON
-        document.getElementById('user-details').style.display = 'block'; // Muestra los detalles del usuario
-        document.getElementById('profilePictureContainer').style.display = 'block'; // Muestra la imagen del perfil
+        document.getElementById('username').textContent = data.username;
+        document.getElementById('email').textContent = data.email;
+        document.getElementById('profilePicture').src = data.profilePicture;
+        document.getElementById('user-details').style.display = 'block';
+        document.getElementById('profilePictureContainer').style.display = 'block';
     } catch (error) {
         console.error('Error:', error);
     }
@@ -27,7 +32,7 @@ async function editField(field) {
     let value;
     if (field === 'ProfilePicture') {
         value = prompt('Ingresa la nueva URL de la imagen');
-        if (!value) return; // Si el usuario cancela o no introduce una URL, no proceder
+        if (!value) return;
     } else {
         value = prompt(`Ingresa nuevo ${field}`);
     }
@@ -44,7 +49,7 @@ async function editField(field) {
 
         if (response.ok) {
             alert(`${field} se actualizó correctamente!`);
-            fetchUserProfile(); // Actualiza los detalles del perfil para mostrar la nueva información
+            fetchUserProfile();
         } else {
             alert('Falló al actualizar el perfil');
         }
