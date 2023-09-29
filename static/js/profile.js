@@ -1,9 +1,6 @@
-document.getElementById('searchForm').addEventListener('submit', function(event) {
+async function fetchUserProfile(event) {
     event.preventDefault(); // Esto prevendrá la recarga de la página
-    fetchUserProfile();
-});
-
-async function fetchUserProfile() {
+    
     const userId = document.getElementById('userId').value;
     if (!userId) {
         alert('Por favor ingrese un ID válido');
@@ -49,7 +46,7 @@ async function editField(field) {
 
         if (response.ok) {
             alert(`${field} se actualizó correctamente!`);
-            fetchUserProfile();
+            fetchUserProfile(new Event('click')); // Simula un evento de clic para refrescar la información
         } else {
             alert('Falló al actualizar el perfil');
         }
