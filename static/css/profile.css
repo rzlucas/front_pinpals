@@ -1,111 +1,75 @@
-body {
+body, html {
     margin: 0;
     padding: 0;
     background: url(../images/moleman.png);
-    background-color: #607D8B;
+    background-color: #2C2F33;
+    background-position: right bottom;
     background-size: 20%;
     background-position: right;
     background-repeat: no-repeat;
     font-family: 'Nunito Sans', sans-serif;
+    color: white;
 }
-
-body {
-    background-position: right bottom;
-}
-
 
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
 }
 
-.serch_box {
-    width: 90%;
-    max-width: 400px;
-    padding: 40px;
-    background: rgba(0, 0, 0, 0.627);
-    text-align: center;
-    border-radius: 10px;
-    color: white;
-}
-
-.logo img {
-    width: 170px;
-    margin-bottom: 10px;
-}
-
-
-.serchForm h2 {
+.search-box {
     margin-bottom: 20px;
+    
 }
 
-input[type="text"], input[type="password"] {
-    width: 100%;
+input[type=text] {
     padding: 10px;
-    margin: 10px 0;
     border: none;
-    background:#212121;
-    color: white;
     border-radius: 5px;
+    width: 300px;
 }
 
 button {
-    font-size: 100%;
-    padding: 10px 20px; /* Añadir padding horizontal */
-    background: #3F51B5;
-    color: white;
+    padding: 10px 20px;
+    margin-left: 10px;
     border: none;
     border-radius: 5px;
+    background-color: #3F51B5;
+    color: white;
     cursor: pointer;
-    display: inline-block; /* Hacer que el botón se ajuste al contenido */
 }
 
 button:hover {
-    background: #303F9F;
+    background-color: #303F9F;
 }
 
-.options {
+.profile-field {
+    margin-bottom: 20px;
+}
+
+.user-profile-hidden {
+    display: none;
+}
+
+.footer {
     margin-top: 20px;
-    font-size: 13px;
-    font-family: 'Nunito Sans', sans-serif;
+    background-image: url('../images/moleman.png');
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding-left: 222px; /* Ajusta según el tamaño de tu imagen */
 }
 
-.options a {
+a {
     color: #FBC02D;
     text-decoration: none;
 }
 
-.options span {
-    display: block;
-    margin-top: 10px;
+a:hover {
+    text-decoration: underline;
 }
 
-
-@keyframes bounceIn {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    
-    40% {
-        transform: translateY(-30px);
-    }
-    
-    60% {
-        transform: translateY(-15px);
-    }
-}
-
-.container {
- 
-    opacity: 0; 
-    transform: translateY(-50px);
-    transition: opacity 0.5s ease, transform 0.5s ease; 
-}
-
-.container.visible {
-    opacity: 1;
-    transform: translateY(0);
-    animation: bounceIn 1s; /* Aplica la animación de rebote cuando es visible */
+img {
+    border-radius: 50%;
+    margin-right: 10px;
 }

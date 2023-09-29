@@ -3,46 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Estilos -->
+    <!--Estilos-->
     <link rel="stylesheet" type="text/css" href="../static/css/profile.css">
-    <!-- Fonts -->
+    <!--Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap" rel="stylesheet">
-    <title>Pin Pals: Perfil del usuario</title>
+    <title>Perfil de usuario</title>
 </head>
 <body>
-
-<div id="loadingDiv" style="position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.9); display:none; z-index:9999;">
-    <img src="../static/images/loading.gif" alt="" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width: 100px; height: auto;">
+<!--loading-->
 </div>
 
 <script src="../static/js/loading.js"></script>
-<script src="../static/js/animation.js"></script>
-<script src="../static/js/profile.js"></script>  
 
-<div class="container">
-    <div class="search_box">
-        <input type="text" id="userId" placeholder="INGRESÁ UN ID" required>
-        <button onclick="fetchUserProfile(event)">Buscar</button> <!-- Se pasa el evento como parámetro -->
+    <div class="container">
+
+        <div class="search-box">
+            <input type="text" id="userId" placeholder="Ingrese el ID de usuario">
+            <button onclick="fetchUserProfile()">Buscar</button>
+        </div>
+
+        <div id="user-profile" class="user-profile-hidden">
+            <div class="profile-field">
+                <label>Username: </label>
+                <span id="username"></span>
+                <button onclick="editField('Username')">Edit</button>
+            </div>
+            <div class="profile-field">
+                <label>Email: </label>
+                <span id="email"></span>
+                <button onclick="editField('Email')">Edit</button>
+            </div>
+            <div class="profile-field">
+                <label>Password: </label>
+                <button onclick="editField('Password')">Change Password</button>
+            </div>
+            <div class="profile-field">
+                <label>Profile Picture: </label>
+                <img id="profilePicture" src="" alt="Profile Picture">
+                <button onclick="editField('ProfilePicture')">Change Picture</button>
+            </div>
+        </div>
+        <a href="anotherPage.html">Ir a mis servidores</a>
+
+        <div class="footer">
+            
+        </div>
+
     </div>
 
-    <div id="user-details" style="display:none;">
-        <div>
-            <label>Username: </label>
-            <span id="username"></span>
-        </div>
-        <div>
-            <label>Email: </label>
-            <span id="email"></span>
-        </div>
-    </div>
-
-    <div id="profilePictureContainer" style="display:none;">
-        <label>Profile Picture: </label>
-        <img id="profilePicture" src="" alt="Profile Picture">
-        <button onclick="editField('ProfilePicture')">Cambiar imagen</button>
-    </div>   
-</div>
+    <script src="../static/js/profile.js"></script>
 </body>
+
 </html>
