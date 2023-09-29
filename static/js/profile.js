@@ -8,51 +8,47 @@ async function fetchUserProfile() {
     try {
         const response = await fetch(`http://127.0.0.1:5000/users/${userId}`);
         if (!response.ok) {
-            alert('El usuario noo existe');
+            alert('El usuario no existe');
             return;
         }
 
         const data = await response.json();
-        document.getElementById('username').textContent = data.Username;
-        document.getElementById('email').textContent = data.Email;
-        document.getElementById('profilePicture').src = data.ProfilePicture;
-        document.getElementById('user-profile').style.display = 'block';
-
-        // Esta línea hace que el div de la imagen del perfil sea visible
-        document.getElementById('profilePictureContainer').style.display = 'block';
+        document.getElementById('username').textContent = data.username; // Asegúrate de que estas claves coinciden con las de tu objeto JSON
+        document.getElementById('email').textContent = data.email; // Asegúrate de que estas claves coinciden con las de tu objeto JSON
+        document.getElementById('profilePicture').src = data.profilePicture; // Asegúrate de que estas claves coinciden con las de tu objeto JSON
+        document.getElementById('user-details').style.display = 'block'; // Muestra los detalles del usuario
+        document.getElementById('profilePictureContainer').style.display = 'block'; // Muestra la imagen del perfil
     } catch (error) {
         console.error('Error:', error);
     }
 }
 
-
 async function editField(field) {
     let value;
     if (field === 'ProfilePicture') {
-        value = prompt('Enter the new image URL');
+        value = prompt('Ingresa la nueva URL de la imagen');
+        if (!value) return; // Si el usuario cancela o no introduce una URL, no proceder
     } else {
-        value = prompt(`Enter new ${field}`);
+        value = prompt(`Ingresa nuevo ${field}`);
     }
 
-    if (value) {
-        const userId = document.getElementById('userId').value;
-        try {
-            const response = await fetch(`http://127.0.0.1:5000/users/${userId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ [field]: value })
-            });
+    const userId = document.getElementById('userId').value;
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ [field]: value })
+        });
 
-            if (response.ok) {
-                alert(`${field} updated successfully!`);
-                fetchUserProfile();
-            } else {
-                alert('Failed to update profile');
-            }
-        } catch (error) {
-            console.error('Error:', error);
+        if (response.ok) {
+            alert(`${field} se actualizó correctamente!`);
+            fetchUserProfile(); // Actualiza los detalles del perfil para mostrar la nueva información
+        } else {
+            alert('Falló al actualizar el perfil');
         }
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
