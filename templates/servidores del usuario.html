@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>User Information</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap" rel="stylesheet">
-    <title>Info de usuario</title>
     <style>
+        /* Reset some default styling */
         body, h2, p {
             margin: 0;
             padding: 0;
-            
+        }
+
+        img.profile-picture {
+            border-radius: 50%;  /* Esto hará que la imagen sea redonda */
+            border: 3px solid #40444b; /* Opcional: añade un borde alrededor de la imagen */
         }
 
         body {
             font-family: 'Nunito Sans', sans-serif;
-            background: url(../images/moleman.png);
             background-color: #36393f;
-            color: #BDBDBD;
-            background-position: right bottom;
-            background-size: 20%;
-            background-position: right;
-            background-repeat: no-repeat;
-
+            color: white;
         }
 
         h2 {
@@ -50,13 +44,14 @@
             background-color: #303F9F;
         }
 
-        input[type="number"], input[type="text"] {
+        input[type="text"],
+        input[type="number"] {
             padding: 5px;
             border: none;
             border-radius: 3px;
             background-color: #40444b;
             color: white;
-            margin-right: 5px;
+            margin-bottom: 10px;
         }
 
         .container {
@@ -98,112 +93,328 @@
             }
         }
 
-        form {
-            margin-top: 10px;
+        button.delete {
+            background-color: red;
         }
+
+        button.delete:hover {
+            background-color: darkred;
+        }
+
+
     </style>
 </head>
 
 <body>
-    <div id="loadingDiv" style="position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.9); display:none; z-index:9999;">
-        <img src="../static/images/loading.gif" alt="" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width: 100px; height: auto;">
-    </div>
-    <script src="../static/js/loading.js"></script>
-    <div class="container">
-        <div class="vertical-section">
-            <h2>Información de usuario </h2>
-            <label for="userId">ID del Usuario:</label>
-            <input type="number" id="userId" name="userId">
-            <button onclick="getUserInfo()">Obtener info del usuario</button>
-            <div id="userInfo">
-                <p>Username: </p>
-                <p>Email: </p>
-            </div>
-        </div>
 
-        <div class="vertical-section">
-            <h2>Servidores</h2>
-            <div id="serverInfo">
-                <p>No hay servidores para este usuario.</p>
-            </div>
-            <form id="add-server-form">
-                <input type="text" id="serverName" placeholder="Nombre del Servidor" required>
-                <button type="submit">Añadir Servidor</button>
-            </form>
+<div class="container">
+    <div class="vertical-section">
+        <h2>User Info</h2>
+        <label for="userId">User ID:</label>
+        <input type="number" id="userId" name="userId">
+        <button onclick="getUserInfo()">Get User Info</button>
+        <div id="userInfo">
+            <!-- Aquí se insertarán los datos del usuario -->
         </div>
-
-        <div class="vertical-section">
-            <h2>Chanales</h2>
-            <div id="channelsInfo">
-                <p>Seleccione un servidor para ver los canales.</p>
-            </div>
-        </div>
+        <p id="serverMessage" style="color: red;"></p>
+        <div id="allServers" style="color: white;"></div>
     </div>
 
-    <script>
-        const baseURL = 'http://127.0.0.1:5000';
+    <div class="vertical-section">
+        <h2>Servers</h2>
+        <div id="serverInfo">
+            <!-- Los servidores del usuario se cargarán aquí -->
+        </div>
+        <form id="add-server-form">
+            <input type="text" id="name" placeholder="Nombre del Servidor" required>
+            <input type="hidden" id="ownerId">
+            <button type="submit">Agregar Servidor</button>
+        </form>
+    </div>
 
-        async function getUserInfo() {
-            try {
-                const userId = document.getElementById('userId').value;
-                const response = await fetch(`${baseURL}/users/${userId}`);
-                if (!response.ok) throw new Error('Error fetching user info');
-                const data = await response.json();
+    <div class="vertical-section">
+        <h2>Channels</h2>
+        <div id="channelsInfo">
+            <p>Select a server to view channels.</p>
+        </div>
+        <form id="channel-form">
+            <input type="text" id="channelName" placeholder="Nombre del Canal" required>
+            <input type="hidden" id="serverId">
+            <button type="submit">Agregar Canal</button>
+        </form>
+    </div>
+</div>
 
-                document.getElementById('userInfo').innerHTML = `
-                    <p>Username: ${data.Username}</p>
-                    <p>Email: ${data.Email}</p>
-                `;
+<script>
+    const baseURL = 'http://127.0.0.1:5000';
 
-                getServers(userId);
-            } catch (error) {
-                console.error(error);
+    async function getUserInfo() {
+        try {
+            const userId = document.getElementById('userId').value;
+            const response = await fetch(`${baseURL}/users/${userId}`);
+            if (!response.ok) {
+                throw new Error('Error fetching user info');
             }
-        }
+            const data = await response.json();
 
-        async function getServers(userId) {
-            try {
-                const response = await fetch(`${baseURL}/servers`);
-                if (!response.ok) throw new Error('Error fetching servers');
-                const servers = await response.json();
+            let profilePictureHTML = data.ProfilePicture 
+                ? `<img src="${data.ProfilePicture}" alt="Profile Picture" width="100" height="100" class="profile-picture" />`
+                : '<p>No profile picture available</p>';
 
-                let serverInfoHTML = '';
-
-                servers.forEach(server => {
-                    if (server.OwnerID == userId) {
-                        serverInfoHTML += `
-                            <div class="server">
-                                <p>Nombre del Servidor: ${server.Name}</p>
-                                <button onclick="addChannelForm(${server.ID})">Añadir Canal</button>
-                                <div id="channelsForServer${server.ID}"></div>
-                                <button onclick="getChannels(${server.ID})">Ver Canales</button>
-                            </div>
-                        `;
-                    }
-                });
-
-                document.getElementById('serverInfo').innerHTML = serverInfoHTML;
-                document.getElementById('channelsInfo').innerHTML = '';
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function addChannelForm(serverId) {
-            const form = `
-                <form onsubmit="addChannel(event, ${serverId})">
-                    <input type="text" id="channelName${serverId}" placeholder="Nombre del Canal" required>
-                    <button type="submit">Añadir Canal</button>
-                </form>
+            document.getElementById('userInfo').innerHTML = `
+                <p>Username: ${data.Username}</p>
+                <p>Email: ${data.Email}</p>
+                ${profilePictureHTML}
             `;
-            document.getElementById(`channelsForServer${serverId}`).innerHTML += form;
+
+            document.getElementById('ownerId').value = userId;
+            await getServers(userId); 
+        } catch (error) {
+            console.error(error);
         }
+    }
 
-        function addChannel(event, serverId) {
-            event.preventDefault();
-            const name = document.getElementById(`channelName${serverId}`).value;
 
-            fetch(`${baseURL}/channels/`, {
+    async function getAllServers(userId) {
+    try {
+        const response = await fetch(`${baseURL}/servers`);
+        if (!response.ok) throw new Error('Error fetching all servers');
+        const allServers = await response.json();
+
+        let allServersHTML = '<h3>Servidores disponibles:</h3>';
+        allServers.forEach(server => {
+            allServersHTML += `<p>${server.Name} 
+            <button onclick="joinServer(${userId}, ${server.ID})">Unirse</button></p>`;
+        });
+
+        document.getElementById('allServers').innerHTML = allServersHTML;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function joinServer(userId, serverId) {
+    try {
+        const response = await fetch(`${baseURL}/server-members/${serverId}/members`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ServerID: serverId, UserID: userId })
+        });
+
+        if (!response.ok) throw new Error('Error joining server');
+        const data = await response.json();
+
+        alert('Te has unido al servidor con éxito');
+        getUserInfo();  // Actualiza la información del usuario para reflejar el cambio
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al unirse al servidor');
+    }
+}
+
+
+
+    async function getServers(userId) {
+    try {
+        const response = await fetch(`${baseURL}/servers`);
+        if (!response.ok) throw new Error('Error fetching servers');
+        const servers = await response.json();
+
+        const userServers = servers.filter(server => server.OwnerID == userId);
+
+        let serverInfoHTML = '';
+        userServers.forEach(server => {
+            serverInfoHTML += `
+                <div class="server">
+                    <p>Server Name: ${server.Name}</p>
+                    <button onclick="getChannels(${server.ID})">View Channels</button>
+                    <button onclick="deleteServer(${server.ID})" class="delete">Eliminar Servidor</button> 
+                    <div id="channelsForServer${server.ID}"></div>
+                </div>
+            `;
+        });
+
+        document.getElementById('serverInfo').innerHTML = serverInfoHTML;
+
+        const serverMessageElement = document.getElementById('serverMessage');
+        const allServersElement = document.getElementById('allServers'); 
+        if (userServers.length === 0) {
+            serverMessageElement.textContent = 'Usted no pertenece a ningún servidor';
+            await getAllServers(userId); 
+        } else {
+            serverMessageElement.textContent = '';
+            allServersElement.innerHTML = ''; 
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+
+async function getUserServers(userId) {
+    try {
+        const response = await fetch(`${baseURL}/server-members/${userId}/servers`);
+        if (!response.ok) throw new Error('Error fetching user servers');
+        const userServers = await response.json();
+        return userServers.map(server => server.ServerID);  // Cambiado para devolver solo IDs de servidores
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+
+async function deleteServer(serverId) {
+    try {
+        const response = await fetch(`${baseURL}/servers/${serverId}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) throw new Error('Error deleting server');
+        alert('Servidor eliminado con éxito');
+        const userId = document.getElementById('userId').value;
+        getUserInfo();  // Actualiza la información del usuario para reflejar el cambio
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al eliminar el servidor');
+    }
+}
+
+
+
+
+
+    async function getChannels(serverId) {
+        try {
+            document.getElementById('serverId').value = serverId; 
+            const response = await fetch(`${baseURL}/channels/by_server/${serverId}`);
+            if (!response.ok) throw new Error('Error fetching channels');
+            const channels = await response.json();
+
+            if (channels.message) {
+                document.getElementById(`channelsForServer${serverId}`).innerHTML = '<p>No channels found for this server.</p>';
+                return;
+            }
+
+            let channelInfoHTML = '';
+
+            channels.forEach(channel => {
+                channelInfoHTML += `
+                    <div class="channel">
+                        <p>Channel Name: ${channel.Name}</p>
+                        <button onclick="getMessages(${channel.ID})">View Messages</button>
+                        <div id="messagesForChannel${channel.ID}"></div>
+                        <input type="text" id="newMessageContent${channel.ID}" placeholder="Type a message" />
+                        <button onclick="addMessage(${channel.ID})">Send Message</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('channelsInfo').innerHTML = channelInfoHTML;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getMessages(channelId) {
+    try {
+        const response = await fetch(`${baseURL}/messages`);
+        if (!response.ok) throw new Error('Error fetching messages');
+        const messages = await response.json();
+
+        let messageInfoHTML = '';
+
+        for (let message of messages) {
+    if (message.ChannelID == channelId) {
+        // Obtiene la información del usuario que envió el mensaje
+        const userResponse = await fetch(`${baseURL}/users/${message.UserID}`);
+        if (!userResponse.ok) throw new Error('Error fetching user info');
+        const userData = await userResponse.json();
+
+        // Asegúrate de que los campos Username y Email existan en la respuesta
+        if (userData.Username && userData.Email) {
+            messageInfoHTML += `<div class="message">
+                <img src="${userData.ProfilePicture || 'default-image-url'}" alt="Profile Picture" width="30" height="30" class="profile-picture" />
+                <p><strong>${userData.Username} (${userData.Email}):</strong> ${message.Content}</p>
+            </div>`;
+        } else {
+            console.error('Username and Email fields are missing in the user data', userData);
+        }
+    }
+}
+
+        document.getElementById(`messagesForChannel${channelId}`).innerHTML = messageInfoHTML;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+    async function addMessage(channelId) {
+        try {
+            const content = document.getElementById(`newMessageContent${channelId}`).value;
+            const userId = document.getElementById('userId').value;
+
+            const response = await fetch(`${baseURL}/messages/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Content: content,
+                    UserID: userId,
+                    ChannelID: channelId
+                })
+            });
+
+            if (response.ok) {
+                alert('Mensaje enviado');
+                getMessages(channelId);
+                document.getElementById(`newMessageContent${channelId}`).value = '';
+            } else {
+                console.error('Error al enviar el mensaje:', response.statusText);
+                alert('Error al enviar el mensaje');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    document.getElementById('add-server-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const ownerId = document.getElementById('ownerId').value;
+
+        fetch(`${baseURL}/servers/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    Name: name,
+                    OwnerID: ownerId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Servidor agregado con éxito");
+                document.getElementById('name').value = '';
+                getUserInfo();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    document.getElementById('channel-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const name = document.getElementById('channelName').value;
+        const serverId = document.getElementById('serverId').value;
+
+        fetch(`${baseURL}/channels/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -216,96 +427,14 @@
             .then(response => response.json())
             .then(data => {
                 alert("Canal agregado con éxito");
-                document.getElementById(`channelName${serverId}`).value = '';
-                getServers(document.getElementById('userId').value);
+                document.getElementById('channelName').value = '';
+                getChannels(serverId);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-        }
-
-        async function getChannels(serverId) {
-            try {
-                const response = await fetch(`${baseURL}/channels/by_server/${serverId}`);
-                if (!response.ok) throw new Error('Error fetching channels');
-                const channels = await response.json();
-
-                if (channels.message) {
-                    document.getElementById(`channelsForServer${serverId}`).innerHTML = '<p>No channels found for this server.</p>';
-                    return;
-                }
-
-                let channelInfoHTML = '';
-
-                channels.forEach(channel => {
-                    channelInfoHTML += `
-                        <div class="channel">
-                            <p>Nombre del Canal: ${channel.Name}</p>
-                            <button onclick="getMessages(${channel.ID})">Ver Mensajes</button>
-                            <div id="messagesForChannel${channel.ID}"></div>
-                            <input type="text" id="newMessageContent${channel.ID}" placeholder="Type a message" />
-                            <button onclick="addMessage(${channel.ID})">Enviar Mensaje</button>
-                        </div>
-                    `;
-                });
-
-                document.getElementById(`channelsForServer${serverId}`).innerHTML = channelInfoHTML;
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        async function getMessages(channelId) {
-            try {
-                const response = await fetch(`${baseURL}/messages`);
-                if (!response.ok) throw new Error('Error fetching messages');
-                const messages = await response.json();
-
-                let messageInfoHTML = '';
-
-                messages.forEach(message => {
-                    if (message.ChannelID == channelId) {
-                        messageInfoHTML += `<div class="message">Content: ${message.Content}</div>`;
-                    }
-                });
-
-                document.getElementById(`messagesForChannel${channelId}`).innerHTML = messageInfoHTML;
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        async function addMessage(channelId) {
-            try {
-                const content = document.getElementById(`newMessageContent${channelId}`).value;
-                const userId = 1;
-
-                const response = await fetch(`${baseURL}/messages/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        Content: content,
-                        UserID: userId,
-                        ChannelID: channelId
-                    })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    alert('Mensaje enviado');
-                    getMessages(channelId);
-                } else {
-                    console.error('Error al enviar el mensaje:', response.statusText);
-                    alert('Error al enviar el mensaje');
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    </script>
+    });
+</script>
 </body>
 
 </html>
