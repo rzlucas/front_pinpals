@@ -4,25 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Information</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap" rel="stylesheet">
+    <title>Pin Pals: Servidores</title>
     <style>
-        /* Reset some default styling */
+
+        body {
+            width: 100%;
+            background: url(../images/homer_arbuste.png);
+            font-family: 'Nunito Sans', sans-serif;
+            background-color: #36393f;
+            color: white;
+        }
         body, h2, p {
             margin: 0;
             padding: 0;
         }
 
-        img.profile-picture {
-            border-radius: 50%;  /* Esto hará que la imagen sea redonda */
-            border: 3px solid #40444b; /* Opcional: añade un borde alrededor de la imagen */
+        section{
+            margin: 4%;
         }
 
-        body {
-            font-family: 'Nunito Sans', sans-serif;
-            background-color: #36393f;
-            color: white;
+        img.profile-picture {
+            border-radius: 50%;  
+            border: 3px solid #40444b; 
         }
+
 
         h2 {
             margin-bottom: 10px;
@@ -31,13 +39,14 @@
         }
 
         button {
-            cursor: pointer;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 3px;
-            background-color: #3F51B5;
-            color: white;
             font-size: 14px;
+            padding: 10px 10px; /* Añadir padding horizontal */
+            background: #3F51B5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
         }
 
         button:hover {
@@ -94,7 +103,7 @@
         }
 
         button.delete {
-            background-color: red;
+            background-color: #F44336;
         }
 
         button.delete:hover {
@@ -106,44 +115,53 @@
 </head>
 
 <body>
-
-<div class="container">
-    <div class="vertical-section">
-        <h2>User Info</h2>
-        <label for="userId">User ID:</label>
-        <input type="number" id="userId" name="userId">
-        <button onclick="getUserInfo()">Get User Info</button>
-        <div id="userInfo">
-            <!-- Aquí se insertarán los datos del usuario -->
-        </div>
-        <p id="serverMessage" style="color: red;"></p>
-        <div id="allServers" style="color: white;"></div>
-    </div>
-
-    <div class="vertical-section">
-        <h2>Servers</h2>
-        <div id="serverInfo">
-            <!-- Los servidores del usuario se cargarán aquí -->
-        </div>
-        <form id="add-server-form">
-            <input type="text" id="name" placeholder="Nombre del Servidor" required>
-            <input type="hidden" id="ownerId">
-            <button type="submit">Agregar Servidor</button>
-        </form>
-    </div>
-
-    <div class="vertical-section">
-        <h2>Channels</h2>
-        <div id="channelsInfo">
-            <p>Select a server to view channels.</p>
-        </div>
-        <form id="channel-form">
-            <input type="text" id="channelName" placeholder="Nombre del Canal" required>
-            <input type="hidden" id="serverId">
-            <button type="submit">Agregar Canal</button>
-        </form>
-    </div>
 </div>
+<div id="loadingDiv" style="position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.9); display:none; z-index:9999;">
+    <img src="../static/images/loading.gif" alt="" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width: 100px; height: auto;">
+</div>
+<script src="../static/js/loading.js"></script>
+
+
+    <section>
+        <div class="container">
+            <div class="vertical-section">
+                <h2>INFORMACIÓN DE USUARIO</h2>
+                <label for="userId">ID de usuario:</label>
+                <input type="number" id="userId" name="userId">
+                <button onclick="getUserInfo()">¡Dame las drogas lisa!</button>
+                <div id="userInfo">
+            <!-- Aquí se insertarán los datos del usuario -->
+            </div>
+            <p id="serverMessage" style="color: #F44336;"></p>
+            <div id="allServers" style="color: white;"></div>
+        </div>
+
+        <div class="vertical-section">
+            <h2>SERVIDORES</h2>
+            <div id="serverInfo">
+            <!-- Los servidores del usuario se cargarán aquí -->
+            </div>
+            <form id="add-server-form">
+                 <input type="text" id="name" placeholder="Nombre del Servidor" required>
+                 <input type="hidden" id="ownerId">
+                 <button type="submit">Agregar servidor</button>
+            </form>
+        </div>
+
+
+        <div class="vertical-section">
+             <h2>CANALES</h2>
+             <p style="font-size: 13.5px; color: #FBC02D;vertical-align: middle;">Seleccione un servidor para ver los canales</p>
+             <div id="channelsInfo">
+            </div>
+            <form id="channel-form">
+                 <input type="text" id="channelName" placeholder="Nombre del Canal" required>
+                 <input type="hidden" id="serverId">
+                 <button type="submit">Agregar canal</button>
+             </form>
+        </div>
+    </section>
+    
 
 <script>
     const baseURL = 'http://127.0.0.1:5000';
@@ -435,6 +453,11 @@ async function deleteServer(serverId) {
             });
     });
 </script>
+<footer style="text-align: center;">
+    <img src="../static/images/bombe.png" alt="Descripción de la imagen" width="100" height="100">
+</footer>
+
+
 </body>
 
 </html>
